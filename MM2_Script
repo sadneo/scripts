@@ -1,21 +1,21 @@
 --[[
-- BOX running speed
-- strafing no physics
-- god mode
-- ghost mode
-- sprint trail
-- knife spam
-- trap spam
-- view grabbed gun
-- grab gun
+Song Id
+Play song
+God Mode
+Invisibility-
+Sprint trail-
+Grab gun-
+Grab Fake gun-
+Grab Emotes
 
-- BOX song id
-- play song
-- ==trap all
-- ==loop trap target
-- ==looptrap all
-- ==mesp
-- ==sesp
+
+Running Speed-
+Noclip Enabled-
+2knives enabled-
+2traps enabled-
+2Mesp enabled
+2Sesp enabled
+2Gesp enabled-
 ]]
 
 
@@ -59,47 +59,15 @@ end
 -- UI
 
 local library = loadstring(game:HttpGet("https://pastebin.com/raw/SKZjdjdj"))();
-local Section1 = library:CreateSection("Mods");
-local Section2 = library:CreateSection("Other");
+local Section1 = library:CreateSection("Active");
+local Section2 = library:CreateSection("Passive");
 
-Section1:Box("Running Speed", function(callback)
-    RunningSpeed = callback
+Section1:Box("Song ID", function(callback)
+    SongID = callback
 end)
-Section1:Toggle("Noclip Enabled", function(callback)
-    isStrafingEnabled = callback
-end)
-Section1:Toggle("Invisibility", function(callback)
-    game:GetService("ReplicatedStorage").Remotes.Gameplay.Stealth:FireServer(callback)
-end)
-Section1:Toggle("Sprint Trail", function(callback)
-    game.Players.LocalPlayer.Character.SpeedTrail.Toggle(callback)
-    -- local Event = game:GetService("Workspace").NeoIsSad.SpeedTrail.Toggle if that doesn't work
-end)
-Section1:Toggle("Knives Enabled", function(callback)
-    isKnivesEnabled = callback
-end)
-Section1:Toggle("Traps Enabled", function(callback)
-    isTrapsEnabled = callback
-end)
-Section1:Toggle("View Gun", function(callback)
-    GEspEnabled = callback
-    print(callback)
-end)
-Section1:Button("Fake Gun", function()
-    local A_1 = true
-    local Event = game:GetService("ReplicatedStorage").Remotes.Gameplay.FakeGun
-    Event:FireServer(A_1)
-end)
-Section1:Button("Grab Gun", function()
-    local currentX = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.X
-    local currentY = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.Y
-    local currentZ = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.Z
-
-    if workspace:FindFirstChild("GunDrop") ~= nil then
-        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = workspace:FindFirstChild("GunDrop").CFrame
-        wait(.25)
-        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(currentX, currentY, currentZ)
-    end
+Section1:Button("Play Song", function()
+    print("Play Song Button Pressed")
+    game:GetService("ReplicatedStorage").PlaySong:FireServer("https://www.roblox.com/asset/?id=".. SongID)
 end)
 Section1:Button("God Mode", function()
     player.Character.Humanoid.Name = "1"
@@ -112,14 +80,60 @@ Section1:Button("God Mode", function()
     player.Character.Animate.Disabled = false
     l.BreakJointsOnDeath = false
 end)
-
-
-Section2:Box("Song ID", function(callback)
-    SongID = callback
+Section1:Toggle("Invisibility", function(callback)
+    game:GetService("ReplicatedStorage").Remotes.Gameplay.Stealth:FireServer(callback)
 end)
-Section2:Button("Play Song", function()
-    print("Play Song Button Pressed")
-    game:GetService("ReplicatedStorage").PlaySong:FireServer("https://www.roblox.com/asset/?id=".. SongID)
+Section1:Toggle("Sprint Trail", function(callback)
+    game.Players.LocalPlayer.Character.SpeedTrail.Toggle(callback)
+    -- local Event = game:GetService("Workspace").NeoIsSad.SpeedTrail.Toggle if that doesn't work
+end)
+Section1:Button("Grab Gun", function()
+    local currentX = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.X
+    local currentY = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.Y
+    local currentZ = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.Z
+
+    if workspace:FindFirstChild("GunDrop") ~= nil then
+        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = workspace:FindFirstChild("GunDrop").CFrame
+        wait(.25)
+        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(currentX, currentY, currentZ)
+    end
+end)
+Section1:Button("Fake Gun", function()
+    local A_1 = true
+    local Event = game:GetService("ReplicatedStorage").Remotes.Gameplay.FakeGun
+    Event:FireServer(A_1)
+end)
+
+
+Section2:Box("Running Speed", function(callback)
+    RunningSpeed = callback
+end)
+Section2:Toggle("Noclip Enabled", function(callback)
+    isStrafingEnabled = callback
+end)
+Section2:Toggle("Knives Enabled", function(callback)
+    isKnivesEnabled = callback
+end)
+Section2:Toggle("Traps Enabled", function(callback)
+    isTrapsEnabled = callback
+end)
+Section2:Toggle("Murderer Esp", function(callback)
+    MEspEnabled = callback
+    print(callback)
+end)
+Section2:Toggle("Sherrif Esp", function(callback)
+    SEspEnabled = callback
+    print(callback)
+end)
+Section2:Toggle("View Gun", function(callback)
+    GEspEnabled = callback
+    print(callback)
+end)
+Section2:Button("Emotes", function(callback)
+    local emote = require(game:GetService("ReplicatedStorage").Modules.EmoteModule).GeneratePage
+    local target = game.Players.LocalPlayer.PlayerGui.MainGUI.Game:FindFirstChild("Emotes")
+    local emotelist = {"headless","zombie","zen","ninja","floss","dab"}
+    emote(emotelist,target,'Emotes')
 end)
 --[[
 Section2:Box("Target", function(callback)
@@ -157,21 +171,6 @@ Section2:Button("Looptrap All", function(callback)
     end
 end)
 ]]
-Section2:Button("Emotes", function(callback)
-    local emote = require(game:GetService("ReplicatedStorage").Modules.EmoteModule).GeneratePage
-    local target = game.Players.LocalPlayer.PlayerGui.MainGUI.Game:FindFirstChild("Emotes")
-    local emotelist = {"headless","zombie","zen","ninja","floss","dab"}
-    emote(emotelist,target,'Emotes')
-end)
-Section2:Toggle("Murderer Esp", function(callback)
-    MEspEnabled = callback
-    print(callback)
-end)
-Section2:Toggle("Sherrif Esp", function(callback)
-    SEspEnabled = callback
-    print(callback)
-end)
-
 
 library:Ready();
 
@@ -196,20 +195,15 @@ game:GetService("RunService").Stepped:Connect(function()
 end)
 
 game:GetService("RunService").RenderStepped:Connect(function()
-    print("RenderStepped")
     if MEspEnabled == true then
-        print("MEsp enabled")
         for i,Player in pairs(game.Players:GetPlayers()) do
             print(Player)
             for j, Backpack in pairs(Player:GetChildren()) do
                 print(Backpack)
                 if Backpack.Name == "Backpack" then
-                    print("Backpack found")
                     if Backpack:FindFirstChild("Knife") then
-                        print("Knife found")
                         local ESPBODY = Backpack.Parent.Character.HumanoidRootPart
                         if ESPBODY:FindFirstChild("ESPPart") == nil then
-                            print("no esppart found")
                             CreateESPPart(ESPBODY, Color3.fromRGB(255,0,0))
                         end
                     end
@@ -229,7 +223,10 @@ game:GetService("RunService").RenderStepped:Connect(function()
                 end
             end
         end
-    elseif SEspEnabled == true then
+    end
+end)
+game:GetService("RunService").RenderStepped:Connect(function()
+    if SEspEnabled == true then
         for i,Player in pairs(game.Players:GetPlayers()) do
             for j, Backpack in pairs(Player:GetChildren()) do
                 if Backpack.Name == "Backpack" then
@@ -255,7 +252,10 @@ game:GetService("RunService").RenderStepped:Connect(function()
                 end
             end
         end
-    elseif GEspEnabled == true then
+    end
+end)
+game:GetService("RunService").RenderStepped:Connect(function()
+    if GEspEnabled == true then
         for i,gun in pairs(game.Workspace:GetChildren()) do
             if gun.Name == "GunDrop" then
                 if gun:FindFirstChild("ESPPart") == nil then
