@@ -22,12 +22,6 @@ local CreateESPPart = function(BodyPart,color)
     Box.Parent = BodyPart
 end
 
-game:GetService("RunService").Stepped:Connect(function()
-    if isStrafing == true then
-        LocalPlayer.Character.Humanoid:ChangeState(11)
-    end
-end)
-
 game:GetService("Players").PlayerAdded:Connect(function(player)
     player.CharacterAdded:Connect(function(character)
         local EspBody = character.HumanoidRootPart
@@ -36,6 +30,27 @@ game:GetService("Players").PlayerAdded:Connect(function(player)
         end
     end)
 end)
+
+game:GetService("RunService").Stepped:Connect(function()
+    if isStrafing == true then
+        LocalPlayer.Character.Humanoid:ChangeState(11)
+    end
+end)
+
+game:GetService("UserInputService").InputBegan:Connect(function(input, gameProcessedEvent)
+	if gameProcessedEvent then return end
+	if input.KeyCode == Enum.KeyCode.B then
+		isStrafing = true
+	end
+end)
+
+game:GetService("UserInputService").InputEnded:Connect(function(input, gameProcessedEvent)
+	if gameProcessedEvent then return end
+	if input.KeyCode == Enum.KeyCode.B then
+		isStrafing = false
+	end
+end)
+
 
 mouse.Button1Up:Connect(function()
   local hrp = LocalPlayer.Character.PrimaryPart
