@@ -1,0 +1,43 @@
+--[[darren's request: by sadneo
+Noclip      B
+Click Tp    Click
+Esp         Automatic
+]]
+
+local LocalPlayer = game.Players.LocalPlayer
+local mouse = LocalPlayer:GetMouse()
+
+local isStrafing
+
+local CreateESPPart = function(BodyPart,color)
+    local ESPPartparent = BodyPart
+    local Box = Instance.new("BoxHandleAdornment")
+    Box.Size = BodyPart.Size + Vector3.new(0.1, 0.1, 0.1)
+    Box.Name = "ESPPart"
+    Box.Adornee = ESPPartparent
+    Box.Color3 = color
+    Box.AlwaysOnTop = true
+    Box.ZIndex = 5
+    Box.Transparency = 0.5
+    Box.Parent = BodyPart
+end
+
+game:GetService("RunService").Stepped:Connect(function()
+    if isStrafing == true then
+        LocalPlayer.Character.Humanoid:ChangeState(11)
+    end
+end)
+
+game:GetService("Players").PlayerAdded:Connect(function(player)
+    player.CharacterAdded:Connect(function(character)
+        local EspBody = character.HumanoidRootPart
+        if EspBody:FindFirstChild("ESPPart") == nil then
+            CreateESPPart(EspBody, Color3.fromRGB(255,255,255))
+        end
+    end)
+end)
+
+mouse.Button1Up:Connect(function()
+  local hrp = LocalPlayer.Character.PrimaryPart
+  hrp.CFrame = mouse.Hit
+end)
