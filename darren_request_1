@@ -34,6 +34,7 @@ end)
 game:GetService("RunService").Stepped:Connect(function()
     if isStrafing == true then
         LocalPlayer.Character.Humanoid:ChangeState(11)
+	LocalPlayer.Character.Humanoid.WalkSpeed = 100
     end
 end)
 
