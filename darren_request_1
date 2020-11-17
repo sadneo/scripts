@@ -1,6 +1,7 @@
 --[[darren's request: by sadneo
 Noclip      B
-Click Tp    Click
+Run	    B
+Click Tp    V
 Esp         Automatic
 ]]
 
@@ -42,10 +43,10 @@ game:GetService("UserInputService").InputBegan:Connect(function(input, gameProce
 	if gameProcessedEvent then return end
 	if input.KeyCode == Enum.KeyCode.B then
 		isStrafing = not isStrafing
+	elseif input.KeyCode == Enum.KeyCode.V then
+		local hrp = LocalPlayer.Character.PrimaryPart
+		hrp.CFrame = mouse.Hit
 	end
 end)
 
-mouse.Button1Up:Connect(function()
-  local hrp = LocalPlayer.Character.PrimaryPart
-  hrp.CFrame = mouse.Hit
-end)
+
