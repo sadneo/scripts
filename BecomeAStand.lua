@@ -1,6 +1,3 @@
-local TARGET_NAME = "TARGET NAME HERE"
-
-
 
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
