@@ -3,7 +3,7 @@
 local ScreenGui = Instance.new("ScreenGui")
 local TextBox = Instance.new("TextBox")
 
-ScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+ScreenGui.Parent = game:GetService("CoreGui")
 ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 
 TextBox.Parent = ScreenGui
@@ -15,6 +15,7 @@ TextBox.Font = Enum.Font.SourceSans
 TextBox.Text = "Write Target Name Here"
 TextBox.TextColor3 = Color3.fromRGB(0, 0, 0)
 TextBox.TextSize = 14.000
+TextBox.Draggable = true
 
 
 local Players = game:GetService("Players")
