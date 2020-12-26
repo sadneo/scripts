@@ -7,6 +7,9 @@ Changelogs 1.1
     Fixed Esp
 ChangeLogs 2.0
     Made new section, reformatted code a bit
+Changelogs 2.1
+    Fixed Sherrif Esp
+    Deleted trap section since it wasn't done
 ]]
 
 -- Services
@@ -211,7 +214,7 @@ RunService.RenderStepped:Connect(function()
                     if Backpack:FindFirstChild("Gun") then
                         local ESPBODY = Backpack.Parent.Character.HumanoidRootPart
                         if ESPBODY:FindFirstChild("ESPPart") == nil then
-                            ESPBODY:FindFirstChild("ESPPart"):Destroy()
+                            CreateESPPart(ESPBODY, Color3.fromRGB(0,0,255))
                         end
                     end
                 end
