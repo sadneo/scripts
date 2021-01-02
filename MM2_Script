@@ -1,15 +1,8 @@
 --[[
 Changelogs 1.0
-    made thing
-ChangeLogs 1.2
-    Changed layout to be more organized
-Changelogs 1.1
-    Fixed Esp
-ChangeLogs 2.0
-    Made new section, reformatted code a bit
-Changelogs 2.1
-    Fixed Sherrif Esp
-    Deleted trap section since it wasn't done
+	The script is now decent, has many things that I am proud of.
+	I am planning on changing the UI and adding better esp
+	Also the dead chat is kind of bad right now, but it's usable
 ]]
 
 -- Services
@@ -17,32 +10,48 @@ local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
 local UserInputService = game:GetService("UserInputService")
+local StarterGui = game:GetService("StarterGui")
 
 -- Constants
 local player = Players.LocalPlayer
 local mouse = player:GetMouse()
+local deadChatSettings = { --customize private logs
+	Color = Color3.fromRGB(163, 162, 165); 
+	Font = Enum.Font.SourceSansBold;
+	TextSize = 18;
+}
 
 -- States
+local playerData = ReplicatedStorage.GetPlayerData:InvokeServer()
+
+local seeDeadChatEnabled = false
+local isKnivesEnabled = false
+local isTrapsEnabled = false
+local RunningSpeed = 24
+local RunningPower = 100
+
+local BoxesEnabled = false
+local NamesEnabled = false
+local TracersEnabled = false
+local MEspEnabled = false
+local SEspEnabled = false
+local IEspEnabled = false
+local GEspEnabled = false
+
+local MouseTPEnabled = false
+local teleportTarget = player.Name
+
 local targetName
 local isTrappingAll = false
 local isTrappingTarget = false
-
-local isKnivesEnabled = false
-local isTrapsEnabled = false
-local isStrafingEnabled = false
-local MEspEnabled = false
-local SEspEnabled = false
-local GEspEnabled = false
 
 local isThrowing = false
 local isTrapping = false
 local isStrafing = false
 
-local RunningSpeed = 24
-
 -- Functions
 
-local CreateESPPart = function(BodyPart,color)
+local function CreateEspBox(BodyPart,color)
     local ESPPartparent = BodyPart
     local Box = Instance.new("BoxHandleAdornment")
     Box.Size = BodyPart.Size + Vector3.new(0.1, 0.1, 0.1)
@@ -55,19 +64,72 @@ local CreateESPPart = function(BodyPart,color)
     Box.Parent = BodyPart
 end
 
+local function CreateEspName(BodyPart, color)
+    local ESPPartparent = BodyPart
+    local Box = Instance.new("BoxHandleAdornment")
+    local Label = Instance.new("")
+    Box.Size = BodyPart.Size + Vector3.new(0.1, 0.1, 0.1)
+    Box.Name = "ESPPart"
+    Box.Adornee = ESPPartparent
+    Box.Color3 = color
+    Box.AlwaysOnTop = true
+    Box.ZIndex = 5
+    Box.Transparency = 0.5
+    Box.Parent = BodyPart
+end
+
+local function CreateEspTracer(BodyPart, color)
+
+end
+
+local function onChatted(chatter, message)
+    if seeDeadChatEnabled == true then
+        if chatter ~= player then
+            -- get dead status
+			if true then
+				print("Chatted.")
+                deadChatSettings.Text = "["..chatter.Name.."]: ".. message
+                StarterGui:SetCore("ChatMakeSystemMessage", deadChatSettings)
+            end
+        end
+    end
+end
+
 -- UI
 
 local library = loadstring(game:HttpGet("https://pastebin.com/raw/SKZjdjdj"))();
-local Section1 = library:CreateSection("Active");
-local Section2 = library:CreateSection("Passive");
---local Section3 = library:CreateSection("Other")
+local Section1 = library:CreateSection("Local")
+local Section2 = library:CreateSection("Teleports")
+local Section3 = library:CreateSection("Visuals")
+local Section4 = library:CreateSection("Other")
+local Section5 = library:CreateSection("Credits")
+
+Section1:Toggle("Noclip (B)", function(callback)
+end)
+Section1:Toggle("Run (Ctrl)", function(callback)
+end)
+Section1:Box("Running Speed", function(callback)
+    RunningSpeed = callback
+end)
+Section1:Box("Running Power", function(callback)
+    RunningPower = callback
+end)
+
+Section1:Toggle("See Dead Chat", function(callback)
+    seeDeadChatEnabled = callback
+end)
+Section1:Toggle("Enable Traps (T)", function(callback)
+    isTrapsEnabled = callback
+end)
+Section1:Toggle("Enable Knives (R)", function(callback)
+    isKnivesEnabled = callback
+end)
 
 Section1:Toggle("Invisibility", function(callback)
     ReplicatedStorage.Remotes.Gameplay.Stealth:FireServer(callback)
 end)
 Section1:Toggle("Sprint Trail", function(callback)
-    Players.LocalPlayer.Character.SpeedTrail.Toggle(callback)
-    -- local Event = workspace.NeoIsSad.SpeedTrail.Toggle if that doesn't work
+    Players.LocalPlayer.Character.SpeedTrail.Toggle:FireServer(callback)
 end)
 Section1:Button("God Mode", function()
     player.Character.Humanoid.Name = "1"
@@ -103,54 +165,134 @@ Section1:Button("Emotes", function(callback)
     emote(emotelist,target,'Emotes')
 end)
 
-Section2:Toggle("Noclip Enabled", function(callback)
-    isStrafingEnabled = callback
+
+Section2:Toggle("Teleport to Mouse (V)", function(callback)
+    MouseTPEnabled = callback
 end)
-Section2:Toggle("Knives Enabled", function(callback)
-    isKnivesEnabled = callback
+Section2:Button("Teleport to Player", function(callback)
+    player.Character.HumanoidRootPart.CFrame = Players:FindFirstChild(teleportTarget).Character.HumanoidRootPart.CFrame + CFrame.new(0,1,0)
 end)
-Section2:Toggle("Traps Enabled", function(callback)
-    isTrapsEnabled = callback
+Section2:Box("Player", function(callback)
+    teleportTarget = callback
 end)
-Section2:Toggle("Murderer Esp", function(callback)
+Section2:Button("Map Teleport", function(callback)
+    for i, map in pairs(workspace:GetChildren()) do
+        for i, spawns in pairs(map:GetChildren()) do
+            if spawns.Name == "Spawns" then
+                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = spawns.Spawn.CFrame
+            end
+        end
+    end
+end)
+Section2:Button("Spawn Teleport", function(callback)
+    player.Character.HumanoidRootPart.CFrame = CFrame.new(-108.5, 228, 0.6)
+end)
+Section2:Button("Voting Room Teleport", function(callback)
+    player.Character.HumanoidRootPart.CFrame = CFrame.new(-81, 228, 43)
+end)
+
+
+Section3:Toggle("Boxes", function(callback)
+    BoxesEnabled = callback
+end)
+Section3:Toggle("Names", function(callback)
+    NamesEnabled = callback
+end)
+Section3:Toggle("Tracers", function(callback)
+    TracersEnabled = callback
+end)
+Section3:Toggle("Murderer", function(callback)
     MEspEnabled = callback
 end)
-Section2:Toggle("Sherrif Esp", function(callback)
+Section3:Toggle("Sherrif", function(callback)
     SEspEnabled = callback
 end)
-Section2:Toggle("View Gun", function(callback)
+Section3:Toggle("Innocents", function(callback)
+    IEspEnabled = callback
+end)
+Section3:Toggle("View Gun", function(callback)
     GEspEnabled = callback
 end)
-Section2:Box("Running Speed", function(callback)
-    RunningSpeed = callback
-end)
---[[
-Section3:Box("Target", function(callback)
+
+
+Section4:Box("Target", function(callback)
     targetName = callback
 end)
-Section3:Button("Trap Target", function()
-	local targetPlayer = Players:FindFirstChild(targetName)
-	local hrp = targetPlayer.Character.HumanoidRootPart.CFrame
-	ReplicatedStorage.TrapSystem.PlaceTrap:FireServer(hrppos)
+Section4:Button("Trap Target", function()
+    local targetPlayer = Players:FindFirstChild(targetName)
+    local hrp = targetPlayer.Character.HumanoidRootPart.Position
+    ReplicatedStorage.TrapSystem.PlaceTrap:InvokeServer(CFrame.new(hrp))
 end)
-Section3:Toggle("LoopTrap Target", function(callback)
+Section4:Toggle("LoopTrap Target", function(callback)
 	isTrappingTarget = callback
 end)
 
-Section3:Button("Trap All", function()
+Section4:Button("Trap All", function()
     for i,v in pairs(Players:GetPlayers()) do
-		local hrp = v.Character.HumanoidRootPart.CFrame
-		ReplicatedStorage.TrapSystem.PlaceTrap:FireServer(hrppos)
+		local hrp = v.Character.HumanoidRootPart.CFrame.Position
+		ReplicatedStorage.TrapSystem.PlaceTrap:InvokeServer(CFrame.new(hrp))
 	end
 end)
-Section3:Toggle("LoopTrap All", function(callback)
+Section4:Toggle("LoopTrap All", function(callback)
 	isTrappingAll = callback
 end)
-]]
+
+Section4:Button("Btools", function()
+    local Clone_T = Instance.new("HopperBin", player.Backpack)
+    Clone_T.BinType = "Clone"
+    local Destruct = Instance.new("HopperBin", player.Backpack)
+    Destruct.BinType = "Hammer"
+    local Hold_T = Instance.new("HopperBin", player.Backpack)
+    Hold_T.BinType = "Grab"
+end)
+Section4:Button("Unlock Workspace", function()
+	for i,v in pairs(workspace:GetDescendants()) do
+        v.Locked = false
+    end
+end)
+Section4:Button("Remove Barriers", function()
+	for i,v in pairs(workspace:GetDescendants()) do
+        if v:IsA("BasePart") then
+            if v.Transparency ~= 0 then
+                v.CanCollide = false
+            else
+                v.CanCollide = true
+            end
+        end
+    end
+end)
+
+
+Section5:Button("only the sherrif murderer and gun esp work.", function()end)
+Section5:Button("sadneo:scripting", function()end)
+Section5:Button("aztup:UI", function()end)
+
 library:Ready();
 
 -- Scripts
 
+-- Dead Chat
+for i,v in pairs(Players:GetPlayers()) do
+	v.Chatted:Connect(function(message)
+		onChatted(v, message)
+	end)
+end
+
+Players.PlayerAdded:Connect(function(chatter)
+	chatter.Chatted:Connect(function(message)
+		onChatted(chatter, message)
+	end)
+end)
+
+-- Player Data Getter
+local function whilewait1()
+	while wait(1) do
+        playerData = ReplicatedStorage.GetPlayerData:InvokeServer()
+    end
+end
+coroutine.resume(coroutine.create(whilewait1))
+
+-- Knives
 RunService.Stepped:Connect(function()
     if isThrowing == true and isKnivesEnabled == true then
         local hrp = Players.LocalPlayer.Character.HumanoidRootPart
@@ -159,9 +301,10 @@ RunService.Stepped:Connect(function()
         local A_1 = CFrame.new(mousex, mousey, mousez)
         local A_2 = Vector3.new(hmdx, hmdy, hmdz)
         Players.LocalPlayer.Character.Knife.Throw:FireServer(A_1, A_2)
-end
+    end
 end)
 
+-- Traps
 RunService.Stepped:Connect(function()
     if isTrapping == true and isTrapsEnabled == true then
         local mousepos = mouse.Hit; local mousex = mousepos.X; local mousey = mousepos.Y; local mousez = mousepos.Z
@@ -172,8 +315,25 @@ RunService.Stepped:Connect(function()
 end)
 
 RunService.Stepped:Connect(function()
-    if isStrafing == true and isStrafingEnabled == true then
+    if isStrafing == true then
         Players.LocalPlayer.Character.Humanoid:ChangeState(11)
+    end
+end)
+
+RunService.Stepped:Connect(function()
+    if isTrappingTarget == true then
+        local targetPlayer = Players:FindFirstChild(targetName)
+        local hrp = targetPlayer.Character.HumanoidRootPart.Position
+        ReplicatedStorage.TrapSystem.PlaceTrap:InvokeServer(CFrame.new(hrp))
+    end
+end)
+
+RunService.Stepped:Connect(function()
+    if isTrappingAll == true then
+        for i,v in pairs(Players:GetPlayers()) do
+            local hrp = v.Character.HumanoidRootPart.CFrame.Position
+            ReplicatedStorage.TrapSystem.PlaceTrap:InvokeServer(CFrame.new(hrp))
+        end
     end
 end)
 
@@ -185,7 +345,7 @@ RunService.RenderStepped:Connect(function()
                     if Backpack:FindFirstChild("Knife") then
                         local ESPBODY = Backpack.Parent.Character.HumanoidRootPart
                         if ESPBODY:FindFirstChild("ESPPart") == nil then
-                            CreateESPPart(ESPBODY, Color3.fromRGB(255,0,0))
+                            CreateEspBox(ESPBODY, Color3.fromRGB(255,0,0))
                         end
                     end
                 end
@@ -214,7 +374,7 @@ RunService.RenderStepped:Connect(function()
                     if Backpack:FindFirstChild("Gun") then
                         local ESPBODY = Backpack.Parent.Character.HumanoidRootPart
                         if ESPBODY:FindFirstChild("ESPPart") == nil then
-                            CreateESPPart(ESPBODY, Color3.fromRGB(0,0,255))
+                            CreateEspBox(ESPBODY, Color3.fromRGB(0,0,255))
                         end
                     end
                 end
@@ -236,11 +396,42 @@ RunService.RenderStepped:Connect(function()
     end
 end)
 RunService.RenderStepped:Connect(function()
+    if IEspEnabled == true then
+        for i,Player in pairs(Players:GetPlayers()) do
+            for j, Backpack in pairs(Player:GetChildren()) do
+                if Backpack.Name == "Backpack" then
+                    if not Backpack:FindFirstChild("Gun") and not Backpack:FindFirstChild("Knife") then
+                        local ESPBODY = Backpack.Parent.Character.HumanoidRootPart
+                        if ESPBODY:FindFirstChild("ESPPart") == nil then
+                            CreateEspBox(ESPBODY, Color3.fromRGB(0,255,0))
+                        end
+                    end
+                end
+            end
+        end
+    elseif IEspEnabled == false then
+        for i,Player in pairs(Players:GetPlayers()) do
+            for j, Backpack in pairs(Player:GetChildren()) do
+                if Backpack.Name == "Backpack" then
+                    if not Backpack:FindFirstChild("Gun") and not Backpack:FindFirstChild("Knife") then
+                        local ESPBODY = Backpack.Parent.Character.HumanoidRootPart
+                        if ESPBODY:FindFirstChild("ESPPart") ~= nil then
+                            ESPBODY:FindFirstChild("ESPPart"):Destroy()
+                        end
+                    end
+                end
+            end
+        end
+    end
+end)
+
+
+RunService.RenderStepped:Connect(function()
     if GEspEnabled == true then
         for i,gun in pairs(workspace:GetChildren()) do
             if gun.Name == "GunDrop" then
                 if gun:FindFirstChild("ESPPart") == nil then
-                    CreateESPPart(gun, Color3.fromRGB(0,255,0))
+                    CreateEspBox(gun, Color3.fromRGB(255,255,255))
                 end
             end
         end
@@ -263,8 +454,11 @@ UserInputService.InputBegan:Connect(function(input, gameProcessedEvent)
         isTrapping = true
     elseif input.KeyCode == Enum.KeyCode.B then
         isStrafing = not isStrafing
+    elseif input.KeyCode == Enum.KeyCode.V and MouseTPEnabled then
+        player.Character.HumanoidRootPart.CFrame = mouse.Hit
     elseif input.KeyCode == Enum.KeyCode.LeftControl then
         Players.LocalPlayer.Character.Humanoid.WalkSpeed = RunningSpeed
+        Players.LocalPlayer.Character.Humanoid.JumpPower = RunningPower
     end
 end)
 
@@ -276,5 +470,6 @@ UserInputService.InputEnded:Connect(function(input, gameProcessedEvent)
 		isTrapping = false
     elseif input.KeyCode == Enum.KeyCode.LeftControl then
         Players.LocalPlayer.Character.Humanoid.WalkSpeed = 16
+        Players.LocalPlayer.Character.Humanoid.JumpPower = 50
     end
 end)
