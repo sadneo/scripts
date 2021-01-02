@@ -1,8 +1,10 @@
 --[[
-Changelogs 1.0
+Changelogs 1.0a
 	The script is now decent, has many things that I am proud of.
 	I am planning on changing the UI and adding better esp
 	Also the dead chat is kind of bad right now, but it's usable
+Changelogs 1.0b
+	oh no the innocent esp sort of breaks the other esp, i disabled it for now until i find a better way to do it
 ]]
 
 -- Services
@@ -395,6 +397,7 @@ RunService.RenderStepped:Connect(function()
         end
     end
 end)
+--[[
 RunService.RenderStepped:Connect(function()
     if IEspEnabled == true then
         for i,Player in pairs(Players:GetPlayers()) do
@@ -424,7 +427,7 @@ RunService.RenderStepped:Connect(function()
         end
     end
 end)
-
+]]
 
 RunService.RenderStepped:Connect(function()
     if GEspEnabled == true then
