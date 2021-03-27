@@ -1,12 +1,3 @@
---[[
-Changelogs 1.0a
-	The script is now decent, has many things that I am proud of.
-	I am planning on changing the UI and adding better esp
-	Also the dead chat is kind of bad right now, but it's usable
-Changelogs 1.0b
-	oh no the innocent esp sort of breaks the other esp, i disabled it for now until i find a better way to do it
-]]
-
 -- Services
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -24,8 +15,6 @@ local deadChatSettings = { --customize private logs
 }
 
 -- States
-local playerData = ReplicatedStorage.GetPlayerData:InvokeServer()
-
 local seeDeadChatEnabled = false
 local isKnivesEnabled = false
 local isTrapsEnabled = false
@@ -34,10 +23,8 @@ local RunningPower = 100
 
 local BoxesEnabled = false
 local NamesEnabled = false
-local TracersEnabled = false
 local MEspEnabled = false
 local SEspEnabled = false
-local IEspEnabled = false
 local GEspEnabled = false
 
 local MouseTPEnabled = false
@@ -97,43 +84,21 @@ local function onChatted(chatter, message)
     end
 end
 
--- UI
+--UI
+local library = loadstring(game:HttpGet("https://pastebin.com/raw/xpT46ucU"))()
 
-local library = loadstring(game:HttpGet("https://pastebin.com/raw/SKZjdjdj"))();
-local Section1 = library:CreateSection("Local")
-local Section2 = library:CreateSection("Teleports")
-local Section3 = library:CreateSection("Visuals")
-local Section4 = library:CreateSection("Other")
-local Section5 = library:CreateSection("Credits")
+local FinityWindow = library.new(true, "Title", UDim2.new(0, 600, 0, 350))
+FinityWindow.ChangeToggleKey(Enum.KeyCode.RightAlt)
 
-Section1:Toggle("Noclip (B)", function(callback)
+local CategoryA = FinityWindow:Category("Local")
+local SectorA1 = CategoryA:Sector("Gameplay")
+SectorA1:Cheat("Checkbox", "Invisibility", function(State)
+    ReplicatedStorage.Remotes.Gameplay.Stealth:FireServer(State)
 end)
-Section1:Toggle("Run (Ctrl)", function(callback)
+SectorA1:Cheat("Checkbox", "Trail", function(State)
+    Players.LocalPlayer.Character.SpeedTrail.Toggle:FireServer(State)
 end)
-Section1:Box("Running Speed", function(callback)
-    RunningSpeed = callback
-end)
-Section1:Box("Running Power", function(callback)
-    RunningPower = callback
-end)
-
-Section1:Toggle("See Dead Chat", function(callback)
-    seeDeadChatEnabled = callback
-end)
-Section1:Toggle("Enable Traps (T)", function(callback)
-    isTrapsEnabled = callback
-end)
-Section1:Toggle("Enable Knives (R)", function(callback)
-    isKnivesEnabled = callback
-end)
-
-Section1:Toggle("Invisibility", function(callback)
-    ReplicatedStorage.Remotes.Gameplay.Stealth:FireServer(callback)
-end)
-Section1:Toggle("Sprint Trail", function(callback)
-    Players.LocalPlayer.Character.SpeedTrail.Toggle:FireServer(callback)
-end)
-Section1:Button("God Mode", function()
+SectorA1:Cheat("Button", "God Mode", function()
     player.Character.Humanoid.Name = "1"
     local l = player.Character["1"]:Clone()
     l.Parent = player.Character
@@ -144,7 +109,7 @@ Section1:Button("God Mode", function()
     player.Character.Animate.Disabled = false
     l.BreakJointsOnDeath = false
 end)
-Section1:Button("Grab Gun", function()
+SectorA1:Cheat("Button", "Grab Gun", function()
     local currentX = Players.LocalPlayer.Character.HumanoidRootPart.CFrame.X
     local currentY = Players.LocalPlayer.Character.HumanoidRootPart.CFrame.Y
     local currentZ = Players.LocalPlayer.Character.HumanoidRootPart.CFrame.Z
@@ -155,29 +120,49 @@ Section1:Button("Grab Gun", function()
         Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(currentX, currentY, currentZ)
     end
 end)
-Section1:Button("Fake Gun", function()
-    local A_1 = true
-    local Event = ReplicatedStorage.Remotes.Gameplay.FakeGun
-    Event:FireServer(A_1)
+SectorA1:Cheat("Button", "Fake Gun", function()
+    ReplicatedStorage.Remotes.Gameplay.FakeGun:FireServer(true)
 end)
-Section1:Button("Emotes", function(callback)
+SectorA1:Cheat("Button", "Emotes", function()
     local emote = require(ReplicatedStorage.Modules.EmoteModule).GeneratePage
     local target = Players.LocalPlayer.PlayerGui.MainGUI.Game:FindFirstChild("Emotes")
     local emotelist = {"headless","zombie","zen","ninja","floss","dab"}
     emote(emotelist,target,'Emotes')
 end)
 
+local SectorA2 = CategoryA:Sector("Settings")
+SectorA2:Cheat("Label", "Noclip (B)")
+SectorA2:Cheat("Label", "Run (Ctrl)")
+SectorA2:Cheat("Textbox", "Running Speed", function(Value)
+	RunningSpeed = Value
+end, {placeholder = "Integer"})
+SectorA2:Cheat("Textbox", "Running Power", function(Value)
+	RunningPower = Value
+end, {placeholder = "Integer"})
 
-Section2:Toggle("Teleport to Mouse (V)", function(callback)
-    MouseTPEnabled = callback
+SectorA2:Cheat("Checkbox", "Dead Chat Enabled", function(State)
+    seeDeadChatEnabled = State
 end)
-Section2:Button("Teleport to Player", function(callback)
+SectorA2:Cheat("Checkbox", "Traps Enabled (T)", function(State)
+    isTrapsEnabled = State
+end)
+SectorA2:Cheat("Checkbox", "Knives Enabled (R)", function(State) 
+	isKnivesEnabled = State
+end)
+
+
+local CategoryB = FinityWindow:Category("Teleports")
+local SectorB1 = CategoryB:Sector("Teleports")
+SectorB1:Cheat("Checkbox", "Mouse TP (V)", function(State) 
+	MouseTPEnabled = State
+end)
+SectorB1:Cheat("Button", "Player", function()
     player.Character.HumanoidRootPart.CFrame = Players:FindFirstChild(teleportTarget).Character.HumanoidRootPart.CFrame + CFrame.new(0,1,0)
 end)
-Section2:Box("Player", function(callback)
-    teleportTarget = callback
-end)
-Section2:Button("Map Teleport", function(callback)
+SectorB1:Cheat("Textbox", "Player Name", function(Value)
+	teleportTarget = Value
+end, {placeholder = "Player.Name"})
+SectorB1:Cheat("Button", "Map", function()
     for i, map in pairs(workspace:GetChildren()) do
         for i, spawns in pairs(map:GetChildren()) do
             if spawns.Name == "Spawns" then
@@ -186,60 +171,60 @@ Section2:Button("Map Teleport", function(callback)
         end
     end
 end)
-Section2:Button("Spawn Teleport", function(callback)
+SectorB1:Cheat("Button", "Spawn", function()
     player.Character.HumanoidRootPart.CFrame = CFrame.new(-108.5, 228, 0.6)
 end)
-Section2:Button("Voting Room Teleport", function(callback)
+SectorB1:Cheat("Button", "Voting Room", function()
     player.Character.HumanoidRootPart.CFrame = CFrame.new(-81, 228, 43)
 end)
 
 
-Section3:Toggle("Boxes", function(callback)
-    BoxesEnabled = callback
+local CategoryC = FinityWindow:Category("Visuals")
+local SectorC1 = CategoryC:Sector("Visuals")
+SectorC1:Cheat("Checkbox", "Murderer", function(State) 
+	MEspEnabled = State
 end)
-Section3:Toggle("Names", function(callback)
-    NamesEnabled = callback
+SectorC1:Cheat("Checkbox", "Sherrif", function(State) 
+	SEspEnabled = State
 end)
-Section3:Toggle("Tracers", function(callback)
-    TracersEnabled = callback
+SectorC1:Cheat("Checkbox", "Gun", function(State) 
+	GEspEnabled = State
 end)
-Section3:Toggle("Murderer", function(callback)
-    MEspEnabled = callback
+
+local SectorC2 = CategoryC:Sector("Settings")
+SectorC2:Cheat("Checkbox", "Boxes", function(State) 
+	BoxesEnabled = State
 end)
-Section3:Toggle("Sherrif", function(callback)
-    SEspEnabled = callback
-end)
-Section3:Toggle("Innocents", function(callback)
-    IEspEnabled = callback
-end)
-Section3:Toggle("View Gun", function(callback)
-    GEspEnabled = callback
+SectorC2:Cheat("Checkbox", "Names", function(State) 
+	NamesEnabled = State
 end)
 
 
-Section4:Box("Target", function(callback)
-    targetName = callback
-end)
-Section4:Button("Trap Target", function()
+local CategoryD = FinityWindow:Category("Other")
+local SectorD1 = CategoryD:Sector("Traps")
+SectorD1:Cheat("Textbox", "Player Name", function(Value)
+	targetName = Value
+end, {placeholder = "Player.Name"})
+SectorD1:Cheat("Button", "Trap Target", function()
     local targetPlayer = Players:FindFirstChild(targetName)
     local hrp = targetPlayer.Character.HumanoidRootPart.Position
     ReplicatedStorage.TrapSystem.PlaceTrap:InvokeServer(CFrame.new(hrp))
 end)
-Section4:Toggle("LoopTrap Target", function(callback)
-	isTrappingTarget = callback
+SectorD1:Cheat("Checkbox", "Loop Trap Target", function(State) 
+	isTrappingTarget = State
 end)
-
-Section4:Button("Trap All", function()
+SectorD1:Cheat("Button", "Trap All", function()
     for i,v in pairs(Players:GetPlayers()) do
 		local hrp = v.Character.HumanoidRootPart.CFrame.Position
 		ReplicatedStorage.TrapSystem.PlaceTrap:InvokeServer(CFrame.new(hrp))
 	end
 end)
-Section4:Toggle("LoopTrap All", function(callback)
-	isTrappingAll = callback
+SectorD1:Cheat("Checkbox", "Loop Trap All", function(State) 
+	isTrappingAll = State
 end)
 
-Section4:Button("Btools", function()
+local SectorD2 = CategoryD:Sector("Other")
+SectorD2:Cheat("Button", "Btools", function()
     local Clone_T = Instance.new("HopperBin", player.Backpack)
     Clone_T.BinType = "Clone"
     local Destruct = Instance.new("HopperBin", player.Backpack)
@@ -247,13 +232,13 @@ Section4:Button("Btools", function()
     local Hold_T = Instance.new("HopperBin", player.Backpack)
     Hold_T.BinType = "Grab"
 end)
-Section4:Button("Unlock Workspace", function()
-	for i,v in pairs(workspace:GetDescendants()) do
+SectorD2:Cheat("Button", "Unlock Workspace", function()
+    for i,v in pairs(workspace:GetDescendants()) do
         v.Locked = false
     end
 end)
-Section4:Button("Remove Barriers", function()
-	for i,v in pairs(workspace:GetDescendants()) do
+SectorD2:Cheat("Button", "Remove Barriers", function()
+    for i,v in pairs(workspace:GetDescendants()) do
         if v:IsA("BasePart") then
             if v.Transparency ~= 0 then
                 v.CanCollide = false
@@ -264,12 +249,6 @@ Section4:Button("Remove Barriers", function()
     end
 end)
 
-
-Section5:Button("only the sherrif murderer and gun esp work.", function()end)
-Section5:Button("sadneo:scripting", function()end)
-Section5:Button("aztup:UI", function()end)
-
-library:Ready();
 
 -- Scripts
 
@@ -285,14 +264,6 @@ Players.PlayerAdded:Connect(function(chatter)
 		onChatted(chatter, message)
 	end)
 end)
-
--- Player Data Getter
-local function whilewait1()
-	while wait(1) do
-        playerData = ReplicatedStorage.GetPlayerData:InvokeServer()
-    end
-end
-coroutine.resume(coroutine.create(whilewait1))
 
 -- Knives
 RunService.Stepped:Connect(function()
