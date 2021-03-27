@@ -1,9 +1,8 @@
 # Scripts
 
-This is where I put scripts I write that I think are cool.
+I like to use loadstrings instead of full scripts sometimes.
 
 ### Credits
 
-> - sadneo - for programming
-> - detourious - for ui lib
-> - Aztup - for ui lib
+> - sadneo - for coding
+> - deto - for ui lib
