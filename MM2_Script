@@ -172,10 +172,10 @@ SectorB1:Cheat("Button", "Map", function()
     end
 end)
 SectorB1:Cheat("Button", "Spawn", function()
-    player.Character.HumanoidRootPart.CFrame = CFrame.new(-108.5, 228, 0.6)
+    player.Character.HumanoidRootPart.CFrame = CFrame.new(-108, 138, 9)
 end)
 SectorB1:Cheat("Button", "Voting Room", function()
-    player.Character.HumanoidRootPart.CFrame = CFrame.new(-81, 228, 43)
+    player.Character.HumanoidRootPart.CFrame = CFrame.new(-108, 141, 83)
 end)
 
 
