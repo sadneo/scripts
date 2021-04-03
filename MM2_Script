@@ -234,7 +234,9 @@ SectorD2:Cheat("Button", "Btools", function()
 end)
 SectorD2:Cheat("Button", "Unlock Workspace", function()
     for i,v in pairs(workspace:GetDescendants()) do
-        v.Locked = false
+        if v:IsA("BasePart") then
+            v.Locked = false
+        end
     end
 end)
 SectorD2:Cheat("Button", "Remove Barriers", function()
