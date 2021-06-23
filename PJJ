@@ -1,0 +1,313 @@
+--[[ Notes:
+change stats
+check stats of other players
+DIO
+Notorious B.I.G
+Kira
+Diavolo
+]]
+
+-- Variables
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local StarterGui = game:GetService("StarterGui")
+
+local player = Players.LocalPlayer
+local metatable = getrawmetatable(game)
+setreadonly(metatable, false)
+local namecall = metatable.__namecall
+
+local remoteSpamEnabled = false
+local remoteSpamNumber = 10
+local godModeEnabled = false
+
+local bossAlertEnabled = false
+
+local shop
+local itemFarmingEnabled = false
+local lookingForZeppeli
+
+
+local itemQuantity = 1
+local itemRecipient
+
+local statChange
+
+-- UI
+local library = loadstring(game:HttpGet("https://pastebin.com/raw/xpT46ucU"))()
+local FinityWindow = library.new(true, "Project Jojo", UDim2.new(0, 500, 0, 350))
+FinityWindow.ChangeToggleKey(Enum.KeyCode.RightAlt)
+
+local Category1 = FinityWindow:Category("Active")
+local Category2 = FinityWindow:Category("Farming")
+local Category3 = FinityWindow:Category("Gui")
+local Category4 = FinityWindow:Category("RISKY")
+local CombatSector = Category1:Sector("Combat")
+local BossSector = Category1:Sector("Boss")
+
+local ItemsSector = Category2:Sector("Items")
+local NpcSector = Category2:Sector("NPC")
+local AutofarmSector = Category2:Sector("Autofarm")
+-- autofarming sector for money
+    -- autofarm npc
+-- risky sector
+    -- kill all
+    -- heal all
+
+local GuiSector = Category3:Sector("Gui")
+local BulkSector = Category3:Sector("Bulk")
+
+local RiskySector = Category4:Sector("Might get u banned")
+
+CombatSector:Cheat("Textbox", "Remote Spam Number", function(value)
+    remoteSpamNumber = tonumber(value)
+end, {placeholder = "Number"})
+CombatSector:Cheat("Checkbox", "Remote Spam Enabled", function(bool)
+    remoteSpamEnabled = bool
+end)
+CombatSector:Cheat("Button", "Heal", function()
+    local A_1 = CFrame.new(0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1)
+    local A_2 = player.Character.Humanoid.MaxHealth - player.Character.Humanoid.Health
+    local A_3 = player.Character.Humanoid
+    local A_4 = player.Character.Torso.voiceline
+    local A_5 = false
+    local Event = ReplicatedStorage.Specials.healevent
+    Event:FireServer(A_1, A_2, A_3, A_4, A_5)
+end)
+CombatSector:Cheat("Checkbox", "God Mode", function(bool)
+    godModeEnabled = bool
+    if bool then
+        local humanoid = player.Character.Humanoid
+        humanoid:GetPropertyChangedSignal("Health"):Connect(function()
+            if godModeEnabled then
+                local A_1 = CFrame.new(0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1)
+                local A_2 = humanoid.MaxHealth - humanoid.Health
+                local A_3 = humanoid
+                local A_4 = player.Character:WaitForChild("Torso"):WaitForChild("voiceline")
+                local A_5 = false
+                local Event = ReplicatedStorage.Specials.healevent
+                Event:FireServer(A_1, A_2, A_3, A_4, A_5)
+            end
+        end)
+    end
+end)
+-- bypass timestop
+
+BossSector:Cheat("Checkbox", "Boss Alert", function(bool)
+    bossAlertEnabled = bool
+end)
+BossSector:Cheat("Button", "Kill DIO", function()
+    local boss = workspace:FindFirstChild("DIO")
+    if boss then
+        local A_1 = 0
+        local A_2 = player.Character["Right Arm"]
+        local A_3 = CFrame.new(0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1)
+        local A_4 = math.huge
+        local A_5 = player.Character.Torso.voiceline
+        local A_6 = boss.Humanoid
+        local Event = game:GetService("ReplicatedStorage").Logic.hitbox
+        Event:InvokeServer(A_1, A_2, A_3, A_4, A_5, A_6)
+    end
+end)
+BossSector:Cheat("Button", "Kill Kira", function()
+    local boss = workspace:FindFirstChild("Kira")
+    if boss then
+        local A_1 = 0
+        local A_2 = player.Character["Right Arm"]
+        local A_3 = CFrame.new(0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1)
+        local A_4 = math.huge
+        local A_5 = player.Character.Torso.voiceline
+        local A_6 = boss.Humanoid
+        local Event = game:GetService("ReplicatedStorage").Logic.hitbox
+        Event:InvokeServer(A_1, A_2, A_3, A_4, A_5, A_6)
+    end
+end)
+BossSector:Cheat("Button", "Kill Diavolo", function()
+    local boss = workspace:FindFirstChild("Diavolo")
+    if boss then
+        local A_1 = 0
+        local A_2 = player.Character["Right Arm"]
+        local A_3 = CFrame.new(0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1)
+        local A_4 = math.huge
+        local A_5 = player.Character.Torso.voiceline
+        local A_6 = boss.Humanoid
+        local Event = game:GetService("ReplicatedStorage").Logic.hitbox
+        Event:InvokeServer(A_1, A_2, A_3, A_4, A_5, A_6)
+    end
+end)
+BossSector:Cheat("Button", "Kill BIG", function()
+    local boss = workspace:FindFirstChild("Notorious B.I.G")
+    if boss then
+        local A_1 = 0
+        local A_2 = player.Character["Right Arm"]
+        local A_3 = CFrame.new(0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1)
+        local A_4 = math.huge
+        local A_5 = player.Character.Torso.voiceline
+        local A_6 = boss.Humanoid
+        local Event = game:GetService("ReplicatedStorage").Logic.hitbox
+        Event:InvokeServer(A_1, A_2, A_3, A_4, A_5, A_6)
+    end
+end)
+
+
+ItemsSector:Cheat("Checkbox", "Item Farm", function(bool)
+    itemFarmingEnabled = bool
+end)
+ItemsSector:Cheat("Button", "Grab Items", function()
+    for _, tool in ipairs(workspace:GetChildren()) do
+        if tool:IsA("Tool") then
+            tool.Handle.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame
+        end
+    end
+end)
+
+NpcSector:Cheat("Button", "Zeppeli", function()
+    local npc
+    repeat
+        if workspace.ChildAdded:Wait().Name == "Zeppeli" then
+            npc = workspace.ChildAdded:Wait()
+        end
+    until npc
+    player.Character.PrimaryPart.CFrame = npc.PrimaryPart.CFrame
+end)
+NpcSector:Cheat("Button", "Gyro", function()
+
+end)
+NpcSector:Cheat("Button", "Caesar", function()
+
+end)
+NpcSector:Cheat("Button", "Wrench", function()
+
+end)
+
+
+GuiSector:Cheat("Checkbox", "Stand Storage", function(bool)
+    player.PlayerGui.standstore.Enabled = bool
+end)
+GuiSector:Cheat("Checkbox", "Shop", function(bool)
+    if shop == nil then
+        shop = ReplicatedStorage.Items.shop:Clone()
+        shop.Parent = player.PlayerGui
+    end
+    shop.Enabled = bool
+end)
+
+BulkSector:Cheat("Textbox", "Item Quantity", function(value)
+    itemQuantity = tonumber(value)
+end, {placeholder = "Number"})
+BulkSector:Cheat("Button", "Stand Arrow", function()
+    for _ = 1, itemQuantity do
+        local A_1 = "StandArrow"
+        ReplicatedStorage.Logic.giveitem:FireServer(A_1)
+    end
+end)
+BulkSector:Cheat("Button", "Rokakaka Fruit", function()
+    for _ = 1, itemQuantity do
+        local A_1 = "RokakakaFruit"
+        ReplicatedStorage.Logic.giveitem:FireServer(A_1)
+    end
+end)
+BulkSector:Cheat("Button", "Lucky Stand Arrow", function()
+    for _ = 1, itemQuantity do
+        local A_1 = "LuckyStandArrow"
+        ReplicatedStorage.Logic.giveitem:FireServer(A_1)
+    end
+end)
+BulkSector:Cheat("Textbox", "Recipient", function(name)
+    for _, person in ipairs(Players:GetPlayers()) do
+        if string.lower(string.sub(person.Name, 1, #name)) == string.lower(name) then
+            itemRecipient = person
+        end
+    end
+end, {placeholder = "Player"})
+BulkSector:Cheat("Button", "Give Inventory", function()
+    for _, item in ipairs(player.Backpack:GetChildren()) do
+        player.Character.Humanoid:EquipTool(item)
+        wait(2)
+        local text = "!giveitem "..itemRecipient.Name
+        local A_2 = "All"
+        ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer(text, A_2)
+    end
+end)
+
+RiskySector:Cheat("Textbox", "Stat Change", function(value)
+    statChange = tonumber(value)
+end, {placeholder = "Number"})
+RiskySector:Cheat("Button", "Power", function()
+    player.Power.Value = statChange
+end)
+RiskySector:Cheat("Button", "Special", function()
+    player.Special.Value = statChange
+end)
+RiskySector:Cheat("Button", "Heal All", function()
+    for _, human in ipairs(workspace:GetChildren()) do
+        if human:FindFirstChild("Humanoid") then
+            local A_1 = CFrame.new(0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1)
+            local A_2 = math.huge
+            local A_3 = v.Humanoid
+            local A_4 = game.Players.LocalPlayer.Character.Torso.voiceline
+            local A_5 = false
+            local Event = game:GetService("ReplicatedStorage").Specials.healevent
+            Event:FireServer(A_1, A_2, A_3, A_4, A_5)
+        end
+    end
+end)
+RiskySector:Cheat("Button", "Kill All", function()
+    for _, human in ipairs(workspace:GetChildren()) do
+        if human:FindFirstChild("Humanoid") then
+            local A_1 = 0
+            local A_2 = player.Character["Right Arm"]
+            local A_3 = CFrame.new(0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1)
+            local A_4 = math.huge
+            local A_5 = player.Character.Torso.voiceline
+            local A_6 = human.Humanoid
+            local Event = game:GetService("ReplicatedStorage").Logic.hitbox
+            Event:InvokeServer(A_1, A_2, A_3, A_4, A_5, A_6)
+        end
+    end
+end)
+
+
+
+-- Scripts
+workspace.ChildAdded:Connect(function(child)
+    if bossAlertEnabled and child.Name == "Diavolo" or child.Name == "DIO" or child.Name == "Notorious B.I.G" or child.Name == "Kira" then
+        StarterGui:SetCore("SendNotification", {
+            "Boss Spawned",
+            child.Name,
+        })
+    elseif itemFarmingEnabled and child:IsA("Tool") then
+        child:WaitForChild("Handle").CFrame = player.Character.HumanoidRootPart.CFrame
+    end
+end)
+
+player.CharacterAdded:Connect(function(character)
+    local humanoid = character:WaitForChild("Humanoid")
+    humanoid:GetPropertyChangedSignal("Health"):Connect(function()
+        if godModeEnabled then
+            local A_1 = CFrame.new(0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1)
+            local A_2 = humanoid.MaxHealth - humanoid.Health
+            local A_3 = humanoid
+            local A_4 = player.Character:WaitForChild("Torso"):WaitForChild("voiceline")
+            local A_5 = false
+            local Event = ReplicatedStorage.Specials.healevent
+            Event:FireServer(A_1, A_2, A_3, A_4, A_5)
+        end
+    end)
+end)
+
+metatable.__namecall = function(self, ...)
+    local args = {...}
+    local method = getnamecallmethod()
+    if remoteSpamEnabled and tostring(method) == "InvokeServer" and tostring(self) == "hitbox" then
+        args[2] = player.Character["Left Arm"]
+        args[5] = player.Character.Torso.voiceline
+        for _ = 1, remoteSpamNumber - 1 do
+            self.InvokeServer(self, unpack(args))
+        end
+        return self.InvokeServer(self, unpack(args))
+    end
+
+    return namecall(self, ...)
+end
+setreadonly(metatable, false)
